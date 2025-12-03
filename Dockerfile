@@ -12,8 +12,11 @@ RUN npm install --production
 # 复制源代码
 COPY . .
 
+# 设置启动脚本权限
+RUN chmod +x run.sh
+
 # 暴露端口
 EXPOSE 8080
 
 # 启动服务
-CMD ["npm", "start"]
+CMD ["sh", "run.sh"]

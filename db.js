@@ -10,7 +10,7 @@ const dbConfig = {
   host: process.env.MYSQL_HOST || 'mysqlac943c6f3b42.rds.ivolces.com',
   port: parseInt(process.env.MYSQL_PORT) || 3306,
   user: process.env.MYSQL_USER || 'mysql_123',
-  password: process.env.MYSQL_PASSWORD || '',
+  password: process.env.DB_PASSWORD || process.env.MYSQL_PASSWORD || '',
   database: process.env.MYSQL_DATABASE || 'tapi_game',
   waitForConnections: true,
   connectionLimit: 10,
