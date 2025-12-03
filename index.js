@@ -138,7 +138,7 @@ app.post('/api/game/record', async (req, res) => {
 app.get('/api/game/records/:open_id', async (req, res) => {
   try {
     const { open_id } = req.params;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
     
     const records = await db.query(`
       SELECT gr.*, u.nickname, u.avatar_url
@@ -146,8 +146,8 @@ app.get('/api/game/records/:open_id', async (req, res) => {
       JOIN users u ON gr.user_id = u.id
       WHERE u.open_id = ?
       ORDER BY gr.created_at DESC
-      LIMIT ?
-    `, [open_id, limit]);
+      LIMIT ${limit}
+    `, [open_id]);
     
     res.json({ code: 0, data: records });
   } catch (error) {
@@ -164,7 +164,7 @@ app.get('/api/game/records/:open_id', async (req, res) => {
  */
 app.get('/api/leaderboard', async (req, res) => {
   try {
-    const limit = parseInt(req.query.limit) || 100;
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 100, 1), 500);
     
     const leaderboard = await db.query(`
       SELECT 
@@ -177,8 +177,8 @@ app.get('/api/leaderboard', async (req, res) => {
       FROM leaderboard l
       JOIN users u ON l.user_id = u.id
       ORDER BY l.best_score DESC
-      LIMIT ?
-    `, [limit]);
+      LIMIT ${limit}
+    `, []);
     
     // 添加排名
     const rankedList = leaderboard.map((item, index) => ({
