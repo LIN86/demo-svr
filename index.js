@@ -15,6 +15,12 @@ const PORT = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.json());
 
+// 请求日志中间件
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
+
 // 健康检查接口
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -258,6 +264,21 @@ process.on('SIGTERM', async () => {
   console.log('收到 SIGTERM 信号，正在关闭服务...');
   await db.closePool();
   process.exit(0);
+});
+
+process.on('SIGINT', async () => {
+  console.log('收到 SIGINT 信号，正在关闭服务...');
+  await db.closePool();
+  process.exit(0);
+});
+
+// 未捕获异常处理
+process.on('uncaughtException', (error) => {
+  console.error('未捕获的异常:', error);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('未处理的 Promise 拒绝:', reason);
 });
 
 startServer();

@@ -105,11 +105,14 @@ async function initDatabase() {
 
 /**
  * 执行查询
+ * @param {string} sql - SQL语句
+ * @param {Array} params - 参数数组
+ * @returns {Promise<Array|Object>} SELECT返回rows数组，INSERT/UPDATE/DELETE返回ResultSetHeader
  */
 async function query(sql, params = []) {
   const pool = getPool();
-  const [rows] = await pool.execute(sql, params);
-  return rows;
+  const [result] = await pool.execute(sql, params);
+  return result;
 }
 
 /**
